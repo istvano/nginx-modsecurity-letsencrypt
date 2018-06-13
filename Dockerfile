@@ -166,6 +166,9 @@ COPY --from=owaspmodsecurity-build /opt/rules /etc/nginx/modsecurity.d/owasp-crs
 COPY --from=owaspmodsecurity-build /opt/crs-setup.conf /etc/nginx/modsecurity.d/owasp-crs
 COPY include.conf /etc/nginx/modsecurity.d/include.conf
 
+# forward modsec audit log to docker
+RUN ln -sf /dev/stdout /var/log/modsec_audit.log 
+
 EXPOSE 80
 STOPSIGNAL SIGTERM
 CMD ["/usr/local/nginx/nginx", "-g", "daemon off;"]
