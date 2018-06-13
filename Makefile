@@ -15,7 +15,8 @@
 #
 REGISTRY_HOST=docker.io
 USERNAME=$(USER)
-NAME=$(shell basename $(PWD))
+#NAME=$(shell basename $(PWD))
+NAME=nginx-modsecurity
 
 RELEASE_SUPPORT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release-support
 IMAGE=$(REGISTRY_HOST)/$(USERNAME)/$(NAME)

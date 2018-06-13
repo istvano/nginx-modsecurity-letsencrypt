@@ -14,7 +14,7 @@ for Apache, IIS and Nginx
 Build the image:
 
 ```
-docker build -t nginx-modsecurity-letsencrypt .
+docker build -t nginx-modsecurity .
 ```
 
 Run the Image:
