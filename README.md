@@ -20,13 +20,13 @@ docker build -t nginx-modsecurity-letsencrypt .
 Run the Image:
 
 ```
-docker run -ti --rm -p 80:80 nginx-modsecurity-letsencrypt
+docker run -ti --rm -p 80:80 nginx-modsecurity
 ```
 
 Check image
 
 ```
-docker run -ti --rm nginx-modsecurity-letsencrypt bash
+docker run -ti --rm nginx-modsecurity bash
 ```
 
 This will start an Apache Webserver,
