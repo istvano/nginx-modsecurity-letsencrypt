@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bash
+/usr/local/bin/ep -v /etc/nginx/conf.d/*
+
+if [ ! -e /etc/letsencrypt/fullchain-copy.pem ]; then
+    cp /etc/nginx/temp-server-cert.pem /etc/letsencrypt/fullchain-copy.pem
+fi
+
+if [ ! -e /etc/letsencrypt/privkey-copy.pem ]; then
+    cp /etc/nginx/temp-server-key.pem /etc/letsencrypt/privkey-copy.pem
+fi
+
+exec nginx -g 'daemon off;'

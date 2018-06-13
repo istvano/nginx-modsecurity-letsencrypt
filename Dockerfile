@@ -169,3 +169,5 @@ COPY include.conf /etc/nginx/modsecurity.d/include.conf
 EXPOSE 80
 STOPSIGNAL SIGTERM
 CMD ["/usr/local/nginx/nginx", "-g", "daemon off;"]
+
+# lets add letsencrypt support to the project

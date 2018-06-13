@@ -14,13 +14,19 @@ for Apache, IIS and Nginx
 Build the image:
 
 ```
-docker build -t modsec .
+docker build -t nginx-modsecurity-letsencrypt .
 ```
 
 Run the Image:
 
 ```
-docker run -ti --rm -p 80:80 modsec
+docker run -ti --rm -p 80:80 nginx-modsecurity-letsencrypt
+```
+
+Check image
+
+```
+docker run -ti --rm nginx-modsecurity-letsencrypt bash
 ```
 
 This will start an Apache Webserver,
@@ -30,20 +36,17 @@ with ModSecurity installed.
 You can access this webserver typically by
 navigating to [http://localhost](http://localhost)
 
-*Note:* ModSecurity without any ruleset isn't very helpful.
-A common ruleset,
-the OWASP Core Rule Set (CRS),
+You can test if it is working
+```
+http://localhost/?param=%22%3E%3Cscript%3Ealert(1);%3C/script%3E
+```
+
+check the following log file cat /var/log/modsec_audit.log
+
+the OWASP Core Rule Set (CRS) has been added
 is available free on [GitHub](https://github.com/SpiderLabs/owasp-modsecurity-crs/).
-CRS has it's own Dockerfile that builds on this image.
 
-### Settings
 
-This image builds ModSecurity
-with the recommended configuration by default.
-
-This configuration blocks very little.
-Please see the [Recommended Configuration](https://github.com/SpiderLabs/ModSecurity/blob/v2/master/modsecurity.conf-recommended)
-for more details
 
 ## Configuration
 
@@ -54,4 +57,3 @@ for this image.
 ## License
 
 License: Apache 2.0 license, see [LICENSE](LICENSE).
-Author: Chaim Sanders ( @csanders-git ) and contributors
