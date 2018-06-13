@@ -1,120 +1,32 @@
-#
-#   Copyright 2015  Xebia Nederland B.V.
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-#
-REGISTRY_HOST=docker.io
-USERNAME=$(USER)
-#NAME=$(shell basename $(PWD))
-NAME=nginx-modsecurity
+#using https://github.com/25th-floor/docker-make-stub
 
-RELEASE_SUPPORT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release-support
+include ./make/*.mk
+
 IMAGE=$(REGISTRY_HOST)/$(USERNAME)/$(NAME)
-
-VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
-
+USERNAME=$(USER)
 SHELL=/bin/bash
 
-.PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
-	push pre-push do-push post-push
+#NAME=$(shell basename $(PWD))
 
-help: ## this help screen
-		@echo "Use the following commands"
-	    @fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
+.PHONY: all
+all: ##@Examples Run all examples
+all: example-se example-interface
 
-build: pre-build docker-build post-build
+.PHONY: example-se
+example-se: ##@Examples How to use $(shell_env)
+	@echo ""
+	@echo 'example: how to to use $$(shell_env)'
+	@printf "=%.0s" {1..80}
+	@echo ""
+	@echo '$$(shell_env) my_command'
+	$(shell_env) echo "echoing I_AM_A_VARIABLE=$${I_AM_A_VARIABLE}"
 
-pre-build:
-
-
-post-build:
-
-
-pre-push:
-
-
-post-push:
-
-
-
-docker-build: .release ##build docker container
-	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) .
-	@DOCKER_MAJOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f1) ; \
-	DOCKER_MINOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f2) ; \
-	if [ $$DOCKER_MAJOR -eq 1 ] && [ $$DOCKER_MINOR -lt 10 ] ; then \
-		echo docker tag -f $(IMAGE):$(VERSION) $(IMAGE):latest ;\
-		docker tag -f $(IMAGE):$(VERSION) $(IMAGE):latest ;\
-	else \
-		echo docker tag $(IMAGE):$(VERSION) $(IMAGE):latest ;\
-		docker tag $(IMAGE):$(VERSION) $(IMAGE):latest ; \
-	fi
-
-.release: ##create release file
-	@echo "release=0.0.0" > .release
-	@echo "tag=$(NAME)-0.0.0" >> .release
-	@echo INFO: .release created
-	@cat .release
-
-
-release: check-status check-release build push ##release image
-
-run: .release
-	@echo "Running..."
-	docker run -ti --rm -p 80:80 $(IMAGE):latest
-
-push: pre-push do-push post-push ##push docker image to registry
-
-do-push: 
-	docker push $(IMAGE):$(VERSION)
-	docker push $(IMAGE):latest
-
-snapshot: build push ##create snapshot
-
-showver: .release
-	@. $(RELEASE_SUPPORT); getVersion
-
-tag-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
-tag-patch-release: .release tag 
-
-tag-minor-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMinorLevel)
-tag-minor-release: .release tag 
-
-tag-major-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMajorLevel)
-tag-major-release: .release tag 
-
-patch-release: tag-patch-release release ##path release
-	@echo $(VERSION)
-
-minor-release: tag-minor-release release ##minor release 
-	@echo $(VERSION)
-
-major-release: tag-major-release release ##major release
-	@echo $(VERSION)
-
-
-tag: TAG=$(shell . $(RELEASE_SUPPORT); getTag $(VERSION))
-tag: check-status
-	@. $(RELEASE_SUPPORT) ; ! tagExists $(TAG) || (echo "ERROR: tag $(TAG) for version $(VERSION) already tagged in git" >&2 && exit 1) ;
-	@. $(RELEASE_SUPPORT) ; setRelease $(VERSION)
-	git add .
-	git commit -m "bumped to version $(VERSION)" ;
-	git tag $(TAG) ;
-	@ if [ -n "$(shell git remote -v)" ] ; then git push --tags ; else echo 'no remote to push tags to' ; fi
-
-check-status: ##check status
-	@. $(RELEASE_SUPPORT) ; ! hasChanges || (echo "ERROR: there are still outstanding changes" >&2 && exit 1) ;
-
-check-release: .release ##check release
-	@. $(RELEASE_SUPPORT) ; tagExists $(TAG) || (echo "ERROR: version not yet tagged in git. make [minor,major,patch]-release." >&2 && exit 1) ;
-	@. $(RELEASE_SUPPORT) ; ! differsFromRelease $(TAG) || (echo "ERROR: current directory differs from tagged $(TAG). make [minor,major,patch]-release." ; exit 1)
+.PHONY: example-interfaces
+example-interface:: ##@Examples Abuse double-colon rules
+	@echo ""
+	@echo "example: using double-colon rules to create and implement interface-ish targets"
+	@printf "=%.0s" {1..80}
+	@echo ""
+	@echo "define 'target:: ##@Category not implemement' in .mk"
+	@echo "implement 'target:: ##@Category this is nice' in Makefile"
