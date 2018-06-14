@@ -168,6 +168,7 @@ COPY include.conf /etc/nginx/modsecurity.d/include.conf
 
 # forward modsec audit log to docker
 RUN ln -sf /dev/stdout /var/log/modsec_audit.log 
+RUN ln -s /usr/local/nginx/nginx /usr/local/bin/nginx
 
 EXPOSE 80
 STOPSIGNAL SIGTERM
