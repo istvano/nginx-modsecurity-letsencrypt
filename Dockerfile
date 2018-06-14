@@ -71,6 +71,7 @@ RUN apt-get update -qq && \
     git             \
     zlib1g-dev      \
     libpcre3-dev    \
+    libssl-dev      \
     libxml2-dev     \
     libyajl-dev     \
     lua5.2-dev      \
@@ -108,10 +109,12 @@ RUN cd /opt/nginx-"$NGINX_VERSION" && \
         --with-http_slice_module \
         --with-http_sub_module \
         --with-http_stub_status_module \
+        --with-http_ssl_module \
         --with-http_v2_module \
-        --with-http_secure_link_module \
+        --with-http_secure_link_module \        
         --with-stream \
         --with-stream_realip_module \
+        --with-stream_ssl_module \
         --add-module=/opt/ModSecurity-nginx \
         --with-cc-opt='-g -O2 -specs=/usr/share/dpkg/no-pie-compile.specs -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
         --with-ld-opt='-specs=/usr/share/dpkg/no-pie-link.specs -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
