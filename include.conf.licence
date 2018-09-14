@@ -1,0 +1,2 @@
+    include modsecurity.conf
+    SecRemoteRules XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX https://dashboard.modsecurity.org/rules/download/plain

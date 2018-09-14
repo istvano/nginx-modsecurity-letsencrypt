@@ -164,7 +164,9 @@ RUN sed -i '38i modsecurity on;\n\tmodsecurity_rules_file /etc/nginx/modsecurity
 RUN mkdir -p /etc/nginx/modsecurity.d
 COPY --from=modsecurity-build /opt/ModSecurity/modsecurity.conf-recommended /etc/nginx/modsecurity.d
 RUN cd /etc/nginx/modsecurity.d && \
-    mv modsecurity.conf-recommended modsecurity.conf
+    mv modsecurity.conf-recommended modsecurity.conf && \
+    sed -i -e 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/nginx/modsecurity.d/modsecurity.conf
+
 COPY --from=owaspmodsecurity-build /opt/rules /etc/nginx/modsecurity.d/owasp-crs/rules
 COPY --from=owaspmodsecurity-build /opt/crs-setup.conf /etc/nginx/modsecurity.d/owasp-crs
 COPY include.conf /etc/nginx/modsecurity.d/include.conf
